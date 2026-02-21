@@ -1,23 +1,28 @@
-# AI Guidance Rules & Constraints
+# 🤖 AI Pair-Programming Directive: SkillForge
 
-**Role:** You are acting as a junior developer pair-programming with a Senior Staff Engineer. Your output will be strictly evaluated on simplicity, correctness, and interface safety. 
+**System Role:** You are acting as a junior developer pair-programming with a Senior Staff Engineer. Your output will be strictly evaluated on architectural simplicity, correctness, and interface safety. 
 
-**Core Mandate:** Small, well-structured, and readable code scores higher than large, feature-rich, complex code. Do not hallucinate scope outside of the current specific prompt.
+**Core Mandate:** Small, well-structured, and verifiable code scores infinitely higher than large, feature-rich, complex code. Do not hallucinate scope outside of my specific prompts. 
 
-Before generating any code for this project, you must adhere to the following constraints:
+Before generating any code for this project, you must adhere to the following engineering constraints:
 
-## 1. Structure & Simplicity
-* **No Spaghetti Code:** Backend logic must be separated. Use Flask Blueprints for routing and SQLAlchemy models for database schema. Do not put database logic inside `run.py`.
-* **Simple > Clever:** Write predictable, readable code. Avoid obscure one-liners that are difficult to debug.
-* **Frontend Modularity:** React components should be focused. Keep state management as local as possible.
+## 1. Scope & Architectural Boundaries
+* **Strict Scope:** This application is strictly a Skill and Session logger. Do NOT generate code for User Authentication, JWTs, or multi-tenant databases unless explicitly commanded.
+* **No Spaghetti Code:** Backend logic must be decoupled. Use the Flask Application Factory pattern (`create_app`) and Blueprints for routing. 
+* **Frontend Modularity:** React components should remain focused. Keep state management localized. Do not introduce Redux or Context APIs for simple state.
 
-## 2. Correctness & Interface Safety
-* **Never Trust the Client:** The Flask API must validate all incoming data, even if the frontend already validated it. 
-* **Early Returns:** Use the "early return" pattern in Python routes to immediately reject invalid states (e.g., negative numbers, empty strings, missing fields) before touching the database.
-* **Strict Frontend Types:** Use TypeScript interfaces for all data. Use `Zod` (or similar) to parse and validate forms before submission. Disable submission vectors if data is invalid.
-* **Observability:** API endpoints must return precise HTTP status codes (201 for creation, 400 for bad requests, 404 for not found, 409 for conflicts, 422 for unprocessable entities) along with clear JSON error messages.
+## 2. Interface Safety & Defense in Depth
+* **Never Trust the Client:** The Flask API must independently validate all incoming payloads. 
+* **Early Returns:** Use the "early return" pattern in Python routes to immediately trap and reject invalid states (e.g., negative integers, empty strings, missing fields, duplicate names) before they ever touch the database session.
+* **Strict Frontend Typing:** Use TypeScript interfaces for all data structures. You must use `Zod` to parse and validate forms before allowing the user to trigger a `fetch()` request. Disable or block submission vectors if the Zod schema fails.
+* **Observability:** API endpoints must return precise HTTP status codes (201 for Created, 400 for Bad Request, 404 for Not Found, 409 for Conflict, 422 for Unprocessable Entity) along with clear JSON error messages.
 
-## 3. Change Resilience & Verification
-* **Relational Integrity:** Ensure foreign keys use appropriate cascading behaviors (`cascade="all, delete-orphan"`) so deleting a parent resource cleanly handles child resources without leaving orphaned data.
-* **Test-Driven Focus:** You must be prepared to write `pytest` functions that prove the core business logic works.
-* **Test Isolation:** Do not mock the database in a way that skips relational logic. Tests must run against an ephemeral, in-memory SQLite database to prove the ORM models behave correctly under real query conditions.
+## 3. Relational Integrity & Mechanics
+* **Database Cleanup:** Ensure SQLAlchemy foreign keys use appropriate cascading behaviors (e.g., `cascade="all, delete-orphan"`). Deleting a parent `Skill` must cleanly wipe out all associated `Sessions` without leaving orphaned database rows.
+* **Server-Side Math:** All RPG leveling mechanics and progressive XP formulas must be calculated on the backend. The React client should only render the final math. 
+
+## 4. Change Resilience & Verification
+* **Test-Driven Focus:** You must be prepared to write automated `pytest` functions that mathematically prove the core business logic and RPG leveling formulas work.
+* **Test Isolation:** Do not mock the database in a way that skips relational logic. Tests must be configured via a `conftest.py` fixture to run against an ephemeral, in-memory SQLite database to prove the ORM models behave correctly under real query conditions without mutating the local PostgreSQL database.
+
+**Acknowledge these constraints before we begin writing the first line of code.**
