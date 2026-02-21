@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { z } from 'zod';
-import { Sword, PlusCircle, ShieldAlert } from 'lucide-react';
+import { Sword, PlusCircle, ShieldAlert, Trash2 } from 'lucide-react';
 
 //Adding interface safety
 interface Skill {
@@ -87,6 +87,27 @@ export default function App() {
     }
   };
 
+  const handleDeleteSkill = async (skillId: number) => {
+    if (!confirm("Are you sure? This will delete the skill and all its history forever.")) {
+      return;
+    }
+
+    const res = await fetch(`${API_BASE}/skills/${skillId}`, {
+      method: 'DELETE',
+    });
+
+    if (res.ok) {
+      // If successful, refresh the list to remove the deleted skill from the UI
+      fetchSkills();
+      // If the deleted skill was selected in the dropdown, reset the selection
+      if (selectedSkill === skillId) {
+        setSelectedSkill(0);
+      }
+    } else {
+      console.error("Failed to delete skill");
+    }
+  };
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', fontFamily: 'system-ui, sans-serif', padding: '2rem' }}>
       <header style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
@@ -158,7 +179,14 @@ export default function App() {
                     <strong>{skill.name}</strong>
                     <span style={{ fontWeight: 'bold', color: '#2563eb' }}>Level {skill.current_level}</span>
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#4b5563' }}>Total XP: {skill.total_xp}</div>
+                  <button
+                    onClick={() => handleDeleteSkill(skill.id)}
+                    style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#dc2626' }}
+                    title="Delete Skill"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                  <div style={{ fontSize: '0.85rem', color: '#4b5563' }}><span>Total XP: {skill.total_xp}</span></div>
                 </div>
               ))}
             </div>
