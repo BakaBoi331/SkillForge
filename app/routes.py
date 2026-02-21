@@ -46,7 +46,20 @@ def get_skills():
     skills = Skill.query.all()
     
     #Formatting for frontend
-    skills_data = [{"id": skill.id, "name": skill.name, "current_level": skill.current_level} for skill in skills]
+    skills_data = []
+    for skill in skills:
+        req_xp = xp_for_next_level(skill.current_level)
+        skills_data.append({
+            "id": skill.id, 
+            "name": skill.name, 
+            "current_level": skill.current_level, 
+            "total_xp": skill.total_xp,
+            # Calculate how much XP is needed for the next level
+            "xp_to_next_level": req_xp - skill.total_xp,
+            # Calculate progress into the current level for a future progress bar
+            "progress_xp": skill.total_xp - (100 * ((skill.current_level - 1)**2))
+        })
+
     return jsonify(skills_data), 200
 
 @api.route('/skills/<int:skill_id>', methods=['DELETE'])

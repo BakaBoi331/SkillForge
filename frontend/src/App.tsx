@@ -8,6 +8,7 @@ interface Skill {
   name: string;
   current_level: number;
   total_xp: number;
+  xp_to_next_level: number;
 }
 
 //Zod validation
@@ -67,7 +68,7 @@ export default function App() {
     });
 
     if (!validation.success) {
-      setFormError(validation.error.errors[0].message);
+      setFormError(validation.error.issues[0].message); //.errors to .issues cause Zod is petty
       return;
     }
 
@@ -186,7 +187,8 @@ export default function App() {
                   >
                     <Trash2 size={18} />
                   </button>
-                  <div style={{ fontSize: '0.85rem', color: '#4b5563' }}><span>Total XP: {skill.total_xp}</span></div>
+                  <div style={{ fontSize: '0.85rem', color: '#4b5563' }}><span>Total XP: <strong>{skill.total_xp}</strong></span></div>
+                  <div style={{ fontSize: '0.85rem', color: '#4b5563' }}><span>XP to Next Level: <strong>{skill.xp_to_next_level}</strong></span></div>
                 </div>
               ))}
             </div>
