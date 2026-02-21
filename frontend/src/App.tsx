@@ -23,6 +23,14 @@ export default function App() {
   const [selectedSkill, setSelectedSkill] = useState<number>(0);
   const [duration, setDuration] = useState<number | ''>('');
   const [formError, setFormError] = useState<string>('');
+  // ADD THIS NEW STATE FOR THE POP-UP
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null);
+
+  // ADD THIS HELPER FUNCTION
+  const showToast = (message: string, type: 'error' | 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000); // Disappears after 3 seconds
+  };
 
   const API_BASE = 'http://127.0.0.1:5000/api';
 
@@ -54,6 +62,11 @@ export default function App() {
     if (res.ok) {
       setNewSkillName('');
       fetchSkills();
+      showToast("Skill successfully Forged!", "success"); // Success pop-up
+    }
+    else {
+      const errData = await res.json();
+      showToast(errData.error || "Failed to forge skill", "error"); // Error pop-up
     }
   };
 
@@ -111,6 +124,7 @@ export default function App() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', fontFamily: 'system-ui, sans-serif', padding: '2rem' }}>
+
       <header style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
         <Sword size={32} color="#2563eb" />
         <h1 style={{ margin: 0 }}>SkillForge RPG</h1>
@@ -173,7 +187,9 @@ export default function App() {
           {skills.length === 0 ? (
             <p style={{ color: '#6b7280' }}>No skills forged yet. Start your journey.</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{
+              display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '550px', overflowY: 'auto', paddingRight: '10px'
+            }}>
               {skills.map(skill => (
                 <div key={skill.id} style={{ padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -195,6 +211,27 @@ export default function App() {
           )}
         </div>
       </div>
-    </div>
+      {/* THE TOAST NOTIFICATION UI */}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: toast.type === 'error' ? '#ef4444' : '#10b981',
+          color: 'white',
+          padding: '1rem 1.5rem',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          animation: 'fade-in-up 0.3s ease-out forwards',
+          zIndex: 1000
+        }}>
+          {toast.type === 'error' ? <ShieldAlert size={20} /> : <PlusCircle size={20} />}
+          <span style={{ fontWeight: '500' }}>{toast.message}</span>
+        </div>
+      )}
+    </div> // <-- This should be the final closing div of your component
   );
 }

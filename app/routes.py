@@ -31,7 +31,7 @@ def create_skill():
         return jsonify({"error": "Skill 'name' cannot be empty"}), 400
 
     # 2. Prevent Invalid States: Check for duplicates
-    existing_skill = Skill.query.filter_by(name=skill_name).first()
+    existing_skill = Skill.query.filter(Skill.name.ilike(skill_name)).first()
     if existing_skill:
         return jsonify({"error": f"Skill '{skill_name}' already exists"}), 409
 

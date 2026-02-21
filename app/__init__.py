@@ -23,6 +23,7 @@ def create_app():
     with app.app_context():
         from . import models  #Loading database tables
         from .routes import api  #Loading API routes
+        db.create_all()  # Create tables if they don't exist
         app.register_blueprint(api, url_prefix='/api')  #Registering the API blueprint with a URL prefix - all endpoints start with /api
         
     return app
