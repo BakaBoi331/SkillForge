@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)  # Enable CORS for all routes - allowing frontend to communicate with backend without cross-origin issues
     
     # Load the database URL from the .env file
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')

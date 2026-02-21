@@ -26,6 +26,13 @@ def create_skill():
     
     return jsonify({"id": new_skill.id, "name": new_skill.name, "current_level": new_skill.current_level}), 201
 
+@api.route('/skills', methods=['GET'])
+def get_skills():
+    skills = Skill.query.all()
+    
+    #Formatting for frontend
+    skills_data = [{"id": skill.id, "name": skill.name, "current_level": skill.current_level} for skill in skills]
+    return jsonify(skills_data), 200
 
 @api.route('/sessions', methods=['POST'])
 def log_session():
