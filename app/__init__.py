@@ -20,6 +20,7 @@ def create_app():
 
     with app.app_context():
         from . import models  #Loading database tables
-        # We will register our API routes here next
+        from .routes import api  #Loading API routes
+        app.register_blueprint(api, url_prefix='/api')  #Registering the API blueprint with a URL prefix - all endpoints start with /api
         
     return app
