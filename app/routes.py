@@ -1,4 +1,3 @@
-# Add this at the top of app/routes.py
 import math
 
 def calculate_level(total_xp):

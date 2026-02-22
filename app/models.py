@@ -1,4 +1,4 @@
-from . import db
+from . import db #Importing from current package - the db object created in __init__.py
 from datetime import datetime, timezone
 
 class Skill(db.Model):
